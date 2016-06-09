@@ -30,16 +30,55 @@
 #Predix Setup
 
 - [Register to predix](https://www.predix.io/registration/) 
-- Subscribe to [traffic planning](https://www.predix.io/services/service.html?id=1763), [pedestrian planning](https://www.predix.io/services/service.html?id=1766) and [parking planning](https://www.predix.io/services/service.html?id=1765) services with a single [uaa](https://www.predix.io/services/service.html?id=1172) service and bind them to an app.
-- Go to the [predix security starter kit](https://predix-starter.run.aws-usw02-pr.ice.predix.io) to configure your uaa instance.
-- Login as admin, then create a client id and secret.
-- Use the following cloud foundary command to get the oauth scopes, zone ids and endpoints of all your services. 
+- Install cloud foundry[https://www.cloudfoundry.org/use/download/].
+- Login using cloud foundry with your registration credentials.
+``` 
+cf login -a https://api.system.aws-usw02-pr.ice.predix.io
+``` 
+- Subscribe to the [uaa](https://www.predix.io/services/service.html?id=1172) service.
+- Subscribe to [traffic planning](https://www.predix.io/services/service.html?id=1763), [pedestrian planning](https://www.predix.io/services/service.html?id=1766) and [parking planning](https://www.predix.io/services/service.html?id=1765) services using the uaa service instance in the previous step.
+- Bind the traffic planning service instance, the pedestrian service instance, and the parking service instance to an app by doing the following
+```  
+cf bind-service <app-name> <service instance name>
+```  
+- Login using cloud foundry with your registration credentials and use the following cloud foundry command to get the oauth scopes, zone ids and end points of all your services. 
 ```  
 cf env <app> 
 ```
-- Add to oauth scopes to the client oauth scopes and authorities using the security starter kit.
-- Update predix/config with the zone id and end points of all your services.
-- Update predix/oauth2/config with the client id and secret.
+- Select the uaa service instance in your space, and click on "Configure Service Instance". This will take you to the Predix Starter Kit. 
+- Login as Admin with your registration credentials.
+- Click on "Create Client Id". Include the oauth scopes you got from cf in the scope array and the authorities array in the Request section. Finally click on Submit.
+- Update predix/config with the zone ids and end points of all your services.
+
+```
+ var services = {
+  parking:{
+    endPoint:"<parking service end point>",
+    zoneId: "<parking service zoneId>"
+  },
+  traffic:{
+    endPoint:"<traffic service end point>",
+    zoneId:"<traffic service zone Id>"
+  },
+  pedestrian:{
+    endPoint:"<pedestrian service end point>",
+    zoneId:"<pedestrian service zone id>"
+  }
+}   
+
+```
+- Update predix/oauth2/config with the uaa service end point, client id and secret.
+```
+// The URL of the default UAA authentiction service
+var uaa = "<uaa end point>";
+
+// The clientId of the predix application
+var clientId = "<client id>";
+
+// The password of the prefix application
+var clientPassword = "<client secret>";
+
+```
 
 #Use the connector
 - Check all the tests available under predix/test
