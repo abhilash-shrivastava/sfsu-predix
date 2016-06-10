@@ -81,7 +81,7 @@ var clientPassword = "<client secret>";
 ```
 
 #Use the connector
-- Check all the tests available under predix/test
+- Check all the tests available under predix/test.
 
 - You can get assets and locations by using a geospatial boundary box. A geospatial boundary box would be as follows. 
 
