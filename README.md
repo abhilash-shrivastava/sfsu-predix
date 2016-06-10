@@ -172,7 +172,7 @@ return asset.listVehiculesIn((endDate.getTime() - (24 * 60 * 60 * 1000)),endDate
 
 - List parking spots and then get the events from the first asset that is monitoring it.
 ```
-var factory = require("/modules/predix/factory");
+var factory = require("predix/factory");
 var predix = new factory.Predix();
 var parkingManager = predix.getParkingManager();
 var boundary1 = "32.123:-117";
