@@ -28,7 +28,7 @@ var services = {
 // Possible modes when running your application
 var modes = {
   SIMDATA: "SIMADATA",
-  PRODUCTION: "PRODUCTION" 
+  PRODUCTION: "NODE" 
 };
 
 // Modify the below to modes.PRODUCTION if you want production data
