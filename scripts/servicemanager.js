@@ -72,6 +72,8 @@ ServiceManager.prototype.listAssets = function(dto) {
     }
   }
   
+ requestParams.params["device-type"]= predixconfig.mode;
+
   if (dto.queryType) {
     requestParams.params.q = dto.queryType +":" + dto.queryValue;
   }
@@ -131,7 +133,8 @@ ServiceManager.prototype.listLocations = function(dto) {
     }
   }
   
-  
+  requestParams.params["device-type"]= predixconfig.mode;
+
   requestParams.params.q ="location-type:" + dto.locationType ;
   
   
