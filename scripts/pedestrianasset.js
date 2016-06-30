@@ -4,8 +4,8 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var asset = require("./asset");
-var mappings = require("./mappings");
+ var asset = require("./asset.js");
+var mappings = require("./mappings.js");
 
 /**
  * Class that represents pedestrian assets entities.

@@ -4,11 +4,11 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var httpclient = require("./httpclient");
-var tokenmanager = require("./oauth2/tokenmanager");
-var trafficmanager = require("./trafficmanager");
-var parkingmanager = require("./parkingmanager");
-var pedestrianmanager = require("./pedestrianmanager");
+ var httpclient = require("./httpclient.js");
+var tokenmanager = require("./oauth2/tokenmanager.js");
+var trafficmanager = require("./trafficmanager.js");
+var parkingmanager = require("./parkingmanager.js");
+var pedestrianmanager = require("./pedestrianmanager.js");
 
 
 /**

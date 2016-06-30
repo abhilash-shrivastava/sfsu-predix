@@ -4,12 +4,12 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var predixconfig = require("./config");
-var mappings = require("./mappings");
-var servicemanager = require("./servicemanager");
-var parkingasset = require("./parkingasset");
-var parkingzone = require("./locations/parkingzone");
-var parkingspot = require("./locations/parkingspot");
+ var predixconfig = require("./config.js");
+var mappings = require("./mappings.js");
+var servicemanager = require("./servicemanager.js");
+var parkingasset = require("./parkingasset.js");
+var parkingzone = require("./locations/parkingzone.js");
+var parkingspot = require("./locations/parkingspot.js");
 
 
 /**

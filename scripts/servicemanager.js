@@ -4,7 +4,7 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var predixconfig = require("./config");
+ var predixconfig = require("./config.js");
 
 /**
  * Allows you to get locations and assets related to a service

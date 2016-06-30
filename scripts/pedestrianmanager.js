@@ -4,11 +4,11 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var predixconfig = require("./config");
-var mappings = require("./mappings");
-var servicemanager = require("./servicemanager");
-var pedestrianasset = require("./pedestrianasset");
-var crosswalk = require("./locations/crosswalk");
+ var predixconfig = require("./config.js");
+var mappings = require("./mappings.js");
+var servicemanager = require("./servicemanager.js");
+var pedestrianasset = require("./pedestrianasset.js");
+var crosswalk = require("./locations/crosswalk.js");
 
 /**
  * @class PedestrianManager

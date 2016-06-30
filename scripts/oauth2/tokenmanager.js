@@ -5,8 +5,8 @@ execute=authenticated
   **/ 
  
  var http = require("http");
-var util = require("./util");
-var oauthconfig = require("./config");
+var util = require("./util.js");
+var oauthconfig = require("./config.js");
 
 /**
   * Obtains authentication tokens according to a given client id and password , and optionally according to given a username and      password of an app.

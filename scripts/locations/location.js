@@ -4,7 +4,7 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var predixConfig = require("../config")
+ var predixConfig = require("../config.js")
 
 
 /**

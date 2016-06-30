@@ -4,9 +4,9 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var location = require("./location");
-var mappings = require("../mappings");
-var pedestrianasset = require("../pedestrianasset");
+ var location = require("./location.js");
+var mappings = require("../mappings.js");
+var pedestrianasset = require("../pedestrianasset.js");
 
 /**
  * Class that represents parking Crosswalk entities.

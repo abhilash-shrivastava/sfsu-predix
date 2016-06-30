@@ -5,8 +5,8 @@ execute=authenticated
   **/ 
  
  var http = require("http");
-var config = require("./oauth2/config");
-var tokenMgr = require("./oauth2/tokenmanager");
+var config = require("./oauth2/config.js");
+var tokenMgr = require("./oauth2/tokenmanager.js");
 
 /**
  * A generic http client that handles the communication with remote APIs

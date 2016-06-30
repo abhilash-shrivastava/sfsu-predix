@@ -4,9 +4,9 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var location = require("./location");
-var mappings = require("../mappings");
-var trafficasset = require("../trafficasset");
+ var location = require("./location.js");
+var mappings = require("../mappings.js");
+var trafficasset = require("../trafficasset.js");
 
 /**
  * Class that represents parking assets entities.

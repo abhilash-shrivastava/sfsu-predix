@@ -95,7 +95,7 @@ boundary1 ex 130:-200 _______________
 
 - List traffic assets within a geospatial boundary and then get the events of the first one.
 ```
-var factory = require("predix/factory");
+var factory = require("predix/factory.js");
 var predix = new factory.Predix();
 var trafficManager = predix.getTrafficManager();
 
@@ -116,7 +116,7 @@ return asset.listTrafficFlow((endDate.getTime() - (24 * 60 * 60 * 1000)),endDate
 
 - List traffic lanes and then get events on lane 1 from the first asset that monitors it.
 ```
-var factory = require("predix/factory");
+var factory = require("predix/factory.js");
 var predix = new factory.Predix();
 var trafficManager = predix.getTrafficManager();
 var options = {
@@ -139,7 +139,7 @@ return asset.listTrafficFlow((endDate.getTime() - (24 * 60 * 60 * 1000)),endDate
 
 - List parking assets and then get the events of the first one.
 ```
-var factory = require("predix/factory");
+var factory = require("predix/factory.js");
 
 var predix = new factory.Predix();
 var parkingManager = predix.getParkingManager();
@@ -172,7 +172,7 @@ return asset.listVehiculesIn((endDate.getTime() - (24 * 60 * 60 * 1000)),endDate
 
 - List parking spots and then get the events from the first asset that is monitoring it.
 ```
-var factory = require("predix/factory");
+var factory = require("predix/factory.js");
 var predix = new factory.Predix();
 var parkingManager = predix.getParkingManager();
 var boundary1 = "32.123:-117";
@@ -201,7 +201,7 @@ return asset.listVehiculesIn((endDate.getTime() - (24 * 60 * 60 * 1000)),endDate
 
 - List pedestrian assets and then get the events from the first asset that is monitoring it.
 ```
-var factory = require("predix/factory");
+var factory = require("predix/factory.js");
 var predix = new factory.Predix();
 var pedestrianManager = predix.getPedestrianManager();
 var options = {
@@ -228,7 +228,7 @@ return {
 
 - List crosswalks and then get the events from the first asset that is monitoring it.
 ```
-var factory = require("predix/factory");
+var factory = require("predix/factory.js");
 var predix = new predixlib.Predix();
 var pedestrianManager = predix.getPedestrianManager();
 var options = {

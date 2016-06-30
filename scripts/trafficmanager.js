@@ -4,12 +4,12 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var predixconfig = require("./config");
-var mappings = require("./mappings");
-var servicemanager = require("./servicemanager");
-var trafficasset = require("./trafficasset");
+ var predixconfig = require("./config.js");
+var mappings = require("./mappings.js");
+var servicemanager = require("./servicemanager.js");
+var trafficasset = require("./trafficasset.js");
 
-var trafficlane = require("./locations/trafficlane");
+var trafficlane = require("./locations/trafficlane.js");
 
 /**
  * Extends the AssetManager and allows you to get Traffic assets using the predix traffic API.
