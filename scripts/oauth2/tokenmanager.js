@@ -2,9 +2,9 @@
  read=nobody 
 write=nobody
 execute=authenticated 
-  **/ 
- 
- var http = require("http");
+  **/
+
+var https = require('follow-redirects').https;
 var util = require("./util.js");
 var oauthconfig = require("./config.js");
 
@@ -25,7 +25,9 @@ var oauthconfig = require("./config.js");
  * @param {String} [dto.userPassword] : the password of the predix app password (defined using the StarterKit for example)
  * optional
  */
-
+var storage = {
+  global: {}
+};
 function TokenManager(dto) {
  
   if (!storage.global.predix){
@@ -35,7 +37,7 @@ function TokenManager(dto) {
   this.uaa = dto && dto.uaa ? dto.uaa : oauthconfig.uaa;
   this.clientPassword = dto && dto.clientPassword ? dto.clientPassword : oauthconfig.clientPassword;
   this.clientId = dto && dto.clientId ? dto.clientId : oauthconfig.clientId;
- 
+  console.log(this.clientId);
   if(dto && dto.username && dto.userPassword){
     this.user = {"username" : dto.username, "password" :dto.userPassword};
   }
@@ -51,7 +53,7 @@ function TokenManager(dto) {
  * @throws Exception
  */
 TokenManager.prototype.getToken = function() {
-  
+
   if(this.user){
     if(storage.global.predix[this.user.username]){
       console.log(JSON.stringify(storage.global.predix[this.user.username]));
@@ -62,36 +64,39 @@ TokenManager.prototype.getToken = function() {
      	return storage.global.predix[this.clientId];
     }
   }
-  
+
   var requestParams = {
-    url: this.uaa,
+    host: this.uaa,
+    path: '/oauth/token?grant_type=client_credentials',
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": "Basic " +  util.Base64.encode(this.clientId + ":" +  this.clientPassword) 
+      "Authorization": "Basic " +  util.Base64.encode(this.clientId + ":" +  this.clientPassword)
     },
-    params: this.user ? this._getUserParams(this.user) : this._getClientParams()
   };
-  
-  var response = http.request(requestParams); //return response;
-  console.log(response.body);
 
-  if (Number(response.status) < 200 || Number(response.status) >= 400) {
-    throw {
-      errorCode: "Authentication_Failure",
-      errorDetail: "TokenManager.otbainToken - Authentication failed with the following message " +  response.body
-    };
-  }
-  var bodyMsg = JSON.parse(response.body);
-  if(!storage.global.predix){
-    storage.global.predix;
-  }
-  if (this.user) {    
-    storage.global.predix[this.user.username] = bodyMsg['access_token'];
-  }else {
-    storage.global.predix[this.clientId] = bodyMsg['access_token'];
-  }
-  console.log("storage global " + JSON.stringify(storage.global));
-  return bodyMsg['access_token'];
+  var callback = (function(response) {
+    var str = '';
+    response.on('data', function (chunk) {
+      str += chunk;
+    });
+
+    response.on('end',  () => {
+      var bodyMsg = JSON.parse(str);
+      if(!storage.global.predix){
+        storage.global.predix;
+      }
+      if (this.user) {
+        storage.global.predix[this.user.username] = bodyMsg['access_token'];
+      }else {
+        console.log(this.clientId);
+        storage.global.predix[this.clientId] = bodyMsg['access_token'];
+      }
+      console.log("storage global " + JSON.stringify(storage.global));
+      return bodyMsg['access_token'];
+    });
+  }).bind(this);
+  var req = https.request(requestParams, callback); //return response;
+  req.end();
 };
 
 /**
@@ -154,4 +159,5 @@ return {
     client_id: this.clientId,
     grant_type: "client_credentials"
   };
-};			
+};
+module.exports = TokenManager;

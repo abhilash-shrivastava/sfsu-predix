@@ -31,7 +31,7 @@ function PedestrianManager(dto) {
   }
 };
 
-PedestrianManager.prototype = new servicemanager.ServiceManager();
+PedestrianManager.prototype = new servicemanager();
 PedestrianManager.prototype.constructor = PedestrianManager;
 
 /**

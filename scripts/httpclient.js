@@ -16,18 +16,18 @@ var tokenMgr = require("./oauth2/tokenmanager.js");
  * @param {Object} [dto] : needed parameters
  * @param {String} [dto.tokenMgr]: An instance of predix/oauth2/tokenmanager. This is used to retrieve the access token.
  */
-function HttpClient(dto) {
-  
+function HttpClient(dto, callback) {
+
   if (!dto || !dto.tokenMgr ) {
-    
+
     throw {
       erroCode: "Invalid_Parameter",
       errorDetail: " dto.tokenMgr is required."
     };
   }
- 
+
   this.tokenMgr = dto.tokenMgr;
-  this.accessToken = this.tokenMgr.getToken();;
+  this.accessToken = this.tokenMgr.getToken(callback);;
 }
 
 /**
@@ -45,24 +45,25 @@ HttpClient.prototype.callApi = function(params) {
   
   var paramsClone = JSON.parse(JSON.stringify(params));
 
-   var response = this._callApi(paramsClone);
-  	console.log("response is " + JSON.stringify(response));
+   this._callApi(paramsClone, function (response) {
+     console.log("response is " + JSON.stringify(response));
      if (parseInt(response.status) >= 200 && parseInt(response.status) < 300) {
-		return JSON.parse(response.body);
+       return JSON.parse(response.body);
      }else{
        console.log("response status was " + response.status + " : " + (response.status == "401"))
-      if (response.status == "401") {
-		  this._refreshToken();      
-          response = this._callApi(params);
-          if (parseInt(response.status) >= 200 && parseInt(response.status) < 300) {
-            return JSON.parse(response.body);	
-          }else{
-             this._handleError(response);  
-          }
-      }else {
-        this._handleError(response);
-      }   
-    }
+       if (response.status == "401") {
+         this._refreshToken();
+         response = this._callApi(params);
+         if (parseInt(response.status) >= 200 && parseInt(response.status) < 300) {
+           return JSON.parse(response.body);
+         }else{
+           this._handleError(response);
+         }
+       }else {
+         this._handleError(response);
+       }
+     }
+   });
 };
 
 HttpClient.prototype._callApi = function(params) {
@@ -81,9 +82,10 @@ HttpClient.prototype._callApi = function(params) {
   params["headers"]["Authorization"] = "Bearer " + this.accessToken;
   //console.log("calling : " + params.url);
   //console.log("request: " + JSON.stringify(params));
-  var response = http.request(params);
-  console.log("response was " + JSON.stringify(response));
-  return response;
+  http.request(params, function (response) {
+    console.log("response was " + JSON.stringify(response));
+    return response;
+  });
 };
   
 HttpClient.prototype._handleError = function(response) {
@@ -131,4 +133,5 @@ HttpClient.prototype._paramsToString = function(params) {
   }
   
   return newParams;
-};			
+};
+module.exports = HttpClient;

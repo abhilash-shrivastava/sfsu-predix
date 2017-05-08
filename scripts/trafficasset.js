@@ -23,7 +23,7 @@ function TrafficAsset(dto,client){
    }
    this.client =client;
 }
-TrafficAsset.prototype = new asset.Asset();
+TrafficAsset.prototype = new asset();
 
 /**
 *@Method listTrafficFlow

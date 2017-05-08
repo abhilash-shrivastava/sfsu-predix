@@ -24,7 +24,7 @@ function ParkingAsset(dto,client){
    }
    this.client = client;
 }
-ParkingAsset.prototype = new asset.Asset();
+ParkingAsset.prototype = new asset();
 
 /**
 * @method listVehiculesOut

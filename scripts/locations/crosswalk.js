@@ -26,7 +26,7 @@ function Crosswalk(dto,client){
    this.client = client;
    this.serviceType = "pedestrian";
 }
-Crosswalk.prototype = new location.Location();
+Crosswalk.prototype = new location();
 
 
 /**

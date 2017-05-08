@@ -146,4 +146,5 @@ ServiceManager.prototype.listLocations = function(dto) {
     requestParams.params.size = dto.size;
   }
   return this.client.callApi(requestParams);
-}			
+}
+module.exports = ServiceManager;

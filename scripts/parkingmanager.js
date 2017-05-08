@@ -31,7 +31,7 @@ function ParkingManager(dto) {
   }
 };
 
-ParkingManager.prototype = new servicemanager.ServiceManager();
+ParkingManager.prototype = new servicemanager();
 ParkingManager.prototype.constructor = ParkingManager;
 
 /**
@@ -120,28 +120,29 @@ ParkingManager.prototype.listParkingAssetsWithin = function(boundary1,boundary2,
 	  //+ "," + mappings.eventTypes.PKIN;
   }
     
-  var response = this.listAssets(options);
-  var page;
-  var assets;
-  if(response["_embedded"]){
-  	 page = response["_embedded"]["page"];
-     assets = response["_embedded"]["assets"];
-  }else{
-    page = response["page"];
-    assets = [];
-  }
-  
-  var parsedAssets = [];
-  console.log("assets " + JSON.stringify(assets));
-  for(var i=0; i < assets.length;i++){
-    var asset = new parkingasset.ParkingAsset(assets[i], this.client);
-    parsedAssets.push(asset);
-  }
-   
-  return {
-     "assets":parsedAssets,
-     "page":page
-  }
+  this.listAssets(options, function (response) {
+    var page;
+    var assets;
+    if(response["_embedded"]){
+      page = response["_embedded"]["page"];
+      assets = response["_embedded"]["assets"];
+    }else{
+      page = response["page"];
+      assets = [];
+    }
+
+    var parsedAssets = [];
+    console.log("assets " + JSON.stringify(assets));
+    for(var i=0; i < assets.length;i++){
+      var asset = new parkingasset.ParkingAsset(assets[i], this.client);
+      parsedAssets.push(asset);
+    }
+
+    return {
+      "assets":parsedAssets,
+      "page":page
+    }
+  });
 }
 
 /**
@@ -284,27 +285,28 @@ ParkingManager.prototype.listParkingSpots = function(boundary1,boundary2,options
   }
   
   
-  var response = this.listLocations(params);
-  var page;
-  var locations;
-  if(response["_embedded"]){
-  	 page = response["_embedded"]["page"];
-     locations = response["_embedded"]["locations"];
-  }else{
-    page = response["page"];
-    locations = [];
-  }
-  
-  var parsedLocations = [];
-  console.log("locations " + JSON.stringify(locations));
-  for(var i=0; i < locations.length;i++){
-    var location = new parkingspot.ParkingSpot(locations[i], this.client);
-    parsedLocations.push(location);
-  }
-   
-  return {
-    "locations":parsedLocations,
-     "page":page
-  }
-  
-}			
+  this.listLocations(params, function (response) {
+    var page;
+    var locations;
+    if(response["_embedded"]){
+      page = response["_embedded"]["page"];
+      locations = response["_embedded"]["locations"];
+    }else{
+      page = response["page"];
+      locations = [];
+    }
+
+    var parsedLocations = [];
+    console.log("locations " + JSON.stringify(locations));
+    for(var i=0; i < locations.length;i++){
+      var location = new parkingspot.ParkingSpot(locations[i], this.client);
+      parsedLocations.push(location);
+    }
+
+    return {
+      "locations":parsedLocations,
+      "page":page
+    }
+  });
+}
+module.exports = ParkingManager;

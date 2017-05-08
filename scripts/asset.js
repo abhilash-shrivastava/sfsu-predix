@@ -89,4 +89,5 @@ Asset.prototype.getEvents = function(dto){
       }
   	}
   	return this.client.callApi(request);
-}			
+}
+module.exports = Asset;

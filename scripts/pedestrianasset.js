@@ -23,7 +23,7 @@ function PedestrianAsset(dto,client){
    }
    this.client =client;
 }
-PedestrianAsset.prototype = new asset.Asset();
+PedestrianAsset.prototype = new asset();
 
 /**
 *@Method listPedestrianIn

@@ -27,7 +27,7 @@ function TrafficLane(dto,client){
    this.client = client;
    this.serviceType = "traffic";
 }
-TrafficLane.prototype = new location.Location();
+TrafficLane.prototype = new location();
 
 /**
 * @method listTrafficAssets 

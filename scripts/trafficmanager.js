@@ -32,7 +32,7 @@ function TrafficManager(dto) {
   }
 };
 
-TrafficManager.prototype = new servicemanager.ServiceManager();
+TrafficManager.prototype = new servicemanager();
 TrafficManager.prototype.constructor = TrafficManager;
 
 /**

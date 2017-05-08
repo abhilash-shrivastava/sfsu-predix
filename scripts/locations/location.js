@@ -72,4 +72,5 @@ Location.prototype.listAssets  = function(){
  	  assets = response["_embedded"]["assets"]
     }
   	return assets;
-}			
+}
+module.exports = Location;

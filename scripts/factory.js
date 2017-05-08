@@ -18,15 +18,15 @@ var pedestrianmanager = require("./pedestrianmanager.js");
  * @param {Object} [dto]
  * @param {Object} [dto.credentials] credentials to use (clientId, password, accountId)
  */
-function Predix(dto) {
+function Predix(dto, callback) {
   var params = null;
-  
+
   if (dto && dto.credentials) {
     params  = dto.credentials;
   }
- 
-  this.tokenManager = new tokenmanager.TokenManager(params);
-  this.client = new httpclient.HttpClient({tokenMgr:this.tokenManager});
+
+  this.tokenManager = new tokenmanager(params);
+  this.client = new httpclient({tokenMgr:this.tokenManager}, callback);
 }
 
 
@@ -44,7 +44,7 @@ Predix.prototype.getTrafficManager = function(){
  * @return {Object} instance of Parkingmanager
  */
 Predix.prototype.getParkingManager = function(){
-  return new parkingmanager.ParkingManager({client:this.client});
+  return new parkingmanager({client:this.client});
 }
 
 /**
@@ -53,4 +53,5 @@ Predix.prototype.getParkingManager = function(){
  */
 Predix.prototype.getPedestrianManager = function(){
   return new pedestrianmanager.PedestrianManager({client:this.client});
-}			
+}
+module.exports = Predix;

@@ -27,7 +27,7 @@ function ParkingZone(dto,client){
    this.client = client;
    this.serviceType = "parking";
 }
-ParkingZone.prototype = new asset.Location();
+ParkingZone.prototype = new asset();
 
 
 ParkingZone.prototype.listParkingAssets = function(){

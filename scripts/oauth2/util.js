@@ -76,4 +76,7 @@ _utf8_encode : function (string) {
 
    return utftext;
 }
-}			
+}
+module.exports = {
+  Base64: Base64
+};
