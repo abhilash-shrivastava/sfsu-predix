@@ -104,47 +104,44 @@ ServiceManager.prototype.listAssets = function(dto) {
  * @return {Object} returns an array of locations and pagination metadata.
  */
 ServiceManager.prototype.listLocations = function(dto) {
-  
-  if (!dto || !dto.zoneId || !dto.serviceType || !dto.bbox) {
-  
-    throw {
-      errorCode: "Invalid_Parameter",
-      errorDetail: "AssetManager: dto, dto.zoneId, dto.serviceType and to.bbox cannot be null or empty"
-    };
-  }
-  
-  var url = predixconfig.services[dto.serviceType]["endPoint"];
-  if (!url) {
-    
-    throw {
-      
-      errorCode: "Service_Not_Found",
-      errorDetail: "Could not find a service endpoint for " +  dto.serviceType + ". Please check predix/config"
-    };
-  }
-  
-  var requestParams = {
-    url: url + "/v1/locations/search",
-    params: {
-      bbox: dto.bbox
-    },
-    headers: {
-      "Predix-Zone-Id": dto.zoneId
-    }
-  }
-  
-  requestParams.params["device-type"]= predixconfig.mode;
 
-  requestParams.params.q ="location-type:" + dto.locationType ;
-  
-  
-  if (dto.index) {
-    requestParams.params.page = dto.index;
-  }
-  
-  if (dto.size) {
-    requestParams.params.size = dto.size;
-  }
-  return this.client.callApi(requestParams);
+  return new Promise((resolve, reject) => {
+    if (!dto || !dto.zoneId || !dto.serviceType || !dto.bbox) {
+
+      throw {
+        errorCode: "Invalid_Parameter",
+        errorDetail: "AssetManager: dto, dto.zoneId, dto.serviceType and to.bbox cannot be null or empty"
+      };
+    }
+
+    var url = predixconfig.services[dto.serviceType]["endPoint"];
+    if (!url) {
+
+      throw {
+
+        errorCode: "Service_Not_Found",
+        errorDetail: "Could not find a service endpoint for " +  dto.serviceType + ". Please check predix/config"
+      };
+    }
+
+    var requestParams = {
+      host: url,
+      path: "/v2/metadata/locations/search?q=location-type:" + dto.locationType + "&bbox=" + dto.bbox + "&device-type=" + predixconfig.mode,
+      headers: {
+        "Predix-Zone-Id": dto.zoneId
+      }
+    };
+
+    if (dto.index) {
+      requestParams.path = requestParams.path + "&page=" + dto.index;
+    }
+
+    if (dto.size) {
+      requestParams.path = requestParams.path + "&size=" + dto.size;
+    }
+    this.client.callApi(requestParams).then((response) => {
+      resolve(response);
+    });
+  })
 }
 module.exports = ServiceManager;

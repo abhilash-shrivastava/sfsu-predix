@@ -37,7 +37,6 @@ function TokenManager(dto) {
   this.uaa = dto && dto.uaa ? dto.uaa : oauthconfig.uaa;
   this.clientPassword = dto && dto.clientPassword ? dto.clientPassword : oauthconfig.clientPassword;
   this.clientId = dto && dto.clientId ? dto.clientId : oauthconfig.clientId;
-  console.log(this.clientId);
   if(dto && dto.username && dto.userPassword){
     this.user = {"username" : dto.username, "password" :dto.userPassword};
   }
@@ -53,50 +52,50 @@ function TokenManager(dto) {
  * @throws Exception
  */
 TokenManager.prototype.getToken = function() {
-
-  if(this.user){
-    if(storage.global.predix[this.user.username]){
-      console.log(JSON.stringify(storage.global.predix[this.user.username]));
-      return storage.global.predix[this.user.username];
-    }
-  }else{
-    if(storage.global.predix[this.clientId]){
-     	return storage.global.predix[this.clientId];
-    }
-  }
-
-  var requestParams = {
-    host: this.uaa,
-    path: '/oauth/token?grant_type=client_credentials',
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": "Basic " +  util.Base64.encode(this.clientId + ":" +  this.clientPassword)
-    },
-  };
-
-  var callback = (function(response) {
-    var str = '';
-    response.on('data', function (chunk) {
-      str += chunk;
-    });
-
-    response.on('end',  () => {
-      var bodyMsg = JSON.parse(str);
-      if(!storage.global.predix){
-        storage.global.predix;
+  return new Promise((resolve, reject) => {
+    if(this.user){
+      if(storage.global.predix[this.user.username]){
+        console.log(JSON.stringify(storage.global.predix[this.user.username]));
+        return storage.global.predix[this.user.username];
       }
-      if (this.user) {
-        storage.global.predix[this.user.username] = bodyMsg['access_token'];
-      }else {
-        console.log(this.clientId);
-        storage.global.predix[this.clientId] = bodyMsg['access_token'];
+    }else{
+      if(storage.global.predix[this.clientId]){
+        return storage.global.predix[this.clientId];
       }
-      console.log("storage global " + JSON.stringify(storage.global));
-      return bodyMsg['access_token'];
-    });
-  }).bind(this);
-  var req = https.request(requestParams, callback); //return response;
-  req.end();
+    }
+
+    var requestParams = {
+      host: this.uaa,
+      path: '/oauth/token?grant_type=client_credentials',
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": "Basic " +  util.Base64.encode(this.clientId + ":" +  this.clientPassword)
+      },
+    };
+
+    var callback = (function(response) {
+      var str = '';
+      response.on('data', function (chunk) {
+        str += chunk;
+      });
+
+      response.on('end',  () => {
+        var bodyMsg = JSON.parse(str);
+        if(!storage.global.predix){
+          storage.global.predix;
+        }
+        if (this.user) {
+          storage.global.predix[this.user.username] = bodyMsg['access_token'];
+        }else {
+          storage.global.predix[this.clientId] = bodyMsg['access_token'];
+        }
+        console.log("storage global " + JSON.stringify(storage.global));
+        resolve(bodyMsg['access_token']);
+      });
+    }).bind(this);
+    var req = https.request(requestParams, callback); //return response;
+    req.end();
+  })
 };
 
 /**

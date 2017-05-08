@@ -10,7 +10,7 @@ execute=authenticated
 module.exports = {
   services: {
     parking:{
-      endPoint:"https://ic-event-service.run.aws-usw02-pr.ice.predix.io/v2",
+      endPoint:"ic-metadata-service.run.aws-usw02-pr.ice.predix.io",
       zoneId: "SDSIM-IE-PARKING"
     },
     traffic:{

@@ -1,9 +1,9 @@
-/** Script ACLs do not delete 
- read=nobody 
+/** Script ACLs do not delete
+ read=nobody
 write=nobody
-execute=authenticated 
-  **/ 
- 
+execute=authenticated
+  **/
+
  var predixconfig = require("./config.js");
 var mappings = require("./mappings.js");
 var servicemanager = require("./servicemanager.js");
@@ -37,10 +37,10 @@ ParkingManager.prototype.constructor = ParkingManager;
 /**
 * @method listParkingInAssetsWithin
 * Gets all the assets that provide parking in events within a GPS boundary.
-* On a map boundary 1 and boundary 2 would create a boundary box as follows  
+* On a map boundary 1 and boundary 2 would create a boundary box as follows
 * boundary1 --------------
 * |                       |
-* |	    			 	  |	  	
+* |	    			 	  |
 * |						  |
 *  -------------------boundary2
 *
@@ -61,10 +61,10 @@ ParkingManager.prototype.listParkingInAssetsWithin = function(boundary1,boundary
 /**
 * @method listParkingOutAssetsWithin
 * Gets all the assets that provide parking events within a GPS boundary.
-* On a map boundary 1 and boundary 2 would create a boundary box as follows  
+* On a map boundary 1 and boundary 2 would create a boundary box as follows
 * boundary1 --------------
 * |                       |
-* |	    			 	  |	  	
+* |	    			 	  |
 * |						  |
 *  -------------------boundary2
 *
@@ -85,10 +85,10 @@ ParkingManager.prototype.listParkingOutAssetsWithin = function(boundary1,boundar
 /**
 * @method listParkingAssetsWithin
 * Gets all the assets that provide parking in events within a GPS boundary.
-* On a map boundary 1 and boundary 2 would create a boundary box as follows  
+* On a map boundary 1 and boundary 2 would create a boundary box as follows
 * boundary1 --------------
 * |                       |
-* |	    			 	  |	  	
+* |	    			 	  |
 * |						  |
 *  -------------------boundary2
 *
@@ -100,26 +100,26 @@ ParkingManager.prototype.listParkingOutAssetsWithin = function(boundary1,boundar
 * @return {Object} returns an object that contains an array of  ParkingAsset objects and pagination metadata.
 **/
 ParkingManager.prototype.listParkingAssetsWithin = function(boundary1,boundary2,options){
-  
+
   if(!boundary1){
-  	throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary1 is required"};  
+  	throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary1 is required"};
   }
-  
+
   if(!boundary2){
-    throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary2 is required"};  
+    throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary2 is required"};
   }
-  
+
   var boundary = boundary1 + "," + boundary2;
   options['queryType'] = 'event-type';
   options['serviceType'] = "parking";
   options['bbox'] = boundary;
   options['zoneId'] = predixconfig.services["parking"].zoneId
-  
+
   if(!options['queryValue']  || options['queryValue'] == ""){
 	  options['queryValue'] = mappings.eventTypes.PKIN;
 	  //+ "," + mappings.eventTypes.PKIN;
   }
-    
+
   this.listAssets(options, function (response) {
     var page;
     var assets;
@@ -148,10 +148,10 @@ ParkingManager.prototype.listParkingAssetsWithin = function(boundary1,boundary2,
 /**
 * @method listParkingZones
 * Gets all the assets that provide parking in events within a GPS boundary.
-* On a map boundary 1 and boundary 2 would create a boundary box as follows  
+* On a map boundary 1 and boundary 2 would create a boundary box as follows
 * boundary1 --------------
 * |                       |
-* |	    			 	  |	  	
+* |	    			 	  |
 * |						  |
 *  -------------------boundary2
 *
@@ -164,25 +164,25 @@ ParkingManager.prototype.listParkingAssetsWithin = function(boundary1,boundary2,
 **/
 
 ParkingManager.prototype.listParkingZones = function(boundary1,boundary2,options){
-  
+
   if(!boundary1){
-  	throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary1 is required."};  
+  	throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary1 is required."};
   }
-  
+
   if(!boundary2){
-    throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary2 is required."};  
+    throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary2 is required."};
   }
-  
+
   if(options == null){
     options = {};
   }
   var page = options.page;
   var size = options.size;
-  
+
   var boundary = boundary1 + "," + boundary2;
-  
+
   var params = {
-    
+
     'serviceType':"parking",
     'locationType':mappings.locationTypes.PARKING_ZONE,
     'bbox':boundary,
@@ -194,15 +194,15 @@ ParkingManager.prototype.listParkingZones = function(boundary1,boundary2,options
     }
     params["size"] = size;
   }
-  
+
   if(page != null && page != undefined){
     if(isNaN(page)){
       throw {"errorCode":"INVALID_PARAMETER_VALUE" , "errorDetail":"page must be a numeric value."};
     }
     params["index"] = page;
   }
-  
-  
+
+
   var response = this.listLocations(params);
   var page;
   var locations;
@@ -213,28 +213,28 @@ ParkingManager.prototype.listParkingZones = function(boundary1,boundary2,options
     page = response["page"];
     locations = [];
   }
-  
+
   var parsedLocations = [];
   console.log("locations " + JSON.stringify(locations));
   for(var i=0; i < locations.length;i++){
     var location = new parkingzone.ParkingZone(locations[i], this.client);
     parsedLocations.push(location);
   }
-   
+
   return {
     "locations":parsedLocations,
      "page":page
   }
-  
+
 }
 
 /**
 * @method listParkingSpots
 * Gets all the assets that provide parking in events within a GPS boundary.
-* On a map boundary 1 and boundary 2 would create a boundary box as follows  
+* On a map boundary 1 and boundary 2 would create a boundary box as follows
 * boundary1 --------------
 * |                       |
-* |	    			 	  |	  	
+* |	    			 	  |
 * |						  |
 *  -------------------boundary2
 *
@@ -246,67 +246,69 @@ ParkingManager.prototype.listParkingZones = function(boundary1,boundary2,options
 * @return {Object} returns an object that contains an array of  ParkingAsset objects and pagination metadata.
 **/
 ParkingManager.prototype.listParkingSpots = function(boundary1,boundary2,options){
-  
-  if(!boundary1){
-  	throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary1 is required"};  
-  }
-  
-  if(!boundary2){
-    throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary2 is required"};  
-  }
-  
-  if(options == null){
-    options = {};
-  }
-  var page = options.page;
-  var size = options.size;
-  
-  var boundary = boundary1 + "," + boundary2;
-  
-  var params = {
-    
-    'serviceType':"parking",
-    'locationType':mappings.locationTypes.PARKING_SPOT,
-    'bbox':boundary,
-    'zoneId':predixconfig.services["parking"].zoneId
-  };
-  if(size != null && size != undefined){
-    if(isNaN(size)){
-      throw {"errorCode":"INVALID_PARAMETER_VALUE" , "errorDetail":"size must be a numeric value"};
-    }
-    params["size"] = size;
-  }
-  
-  if(page != null && page != undefined){
-    if(isNaN(page)){
-      throw {"errorCode":"INVALID_PARAMETER_VALUE" , "errorDetail":"page must be a numeric value"};
-    }
-    params["index"] = page;
-  }
-  
-  
-  this.listLocations(params, function (response) {
-    var page;
-    var locations;
-    if(response["_embedded"]){
-      page = response["_embedded"]["page"];
-      locations = response["_embedded"]["locations"];
-    }else{
-      page = response["page"];
-      locations = [];
+  return new Promise((resolve, reject) => {
+
+    if(!boundary1){
+      throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary1 is required"};
     }
 
-    var parsedLocations = [];
-    console.log("locations " + JSON.stringify(locations));
-    for(var i=0; i < locations.length;i++){
-      var location = new parkingspot.ParkingSpot(locations[i], this.client);
-      parsedLocations.push(location);
+    if(!boundary2){
+      throw {"errorCode" :"PARAMETER_REQUIRED" ,"errorDetail":"Boundary Box boundary2 is required"};
     }
 
-    return {
-      "locations":parsedLocations,
-      "page":page
+    if(options == null){
+      options = {};
     }
-  });
+    var page = options.page;
+    var size = options.size;
+
+    var boundary = boundary1 + "," + boundary2;
+
+    var params = {
+
+      'serviceType':"parking",
+      'locationType':mappings.locationTypes.PARKING_SPOT,
+      'bbox':boundary,
+      'zoneId':predixconfig.services["parking"].zoneId
+    };
+    if(size != null && size != undefined){
+      if(isNaN(size)){
+        throw {"errorCode":"INVALID_PARAMETER_VALUE" , "errorDetail":"size must be a numeric value"};
+      }
+      params["size"] = size;
+    }
+
+    if(page != null && page != undefined){
+      if(isNaN(page)){
+        throw {"errorCode":"INVALID_PARAMETER_VALUE" , "errorDetail":"page must be a numeric value"};
+      }
+      params["index"] = page;
+    }
+
+
+    this.listLocations(params).then((response) => {
+      var page;
+      var locations;
+      if(response["_embedded"]){
+        page = response["_embedded"]["page"];
+        locations = response["_embedded"]["locations"];
+      }else{
+        locations = response["content"];
+      }
+
+      var parsedLocations = [];
+      console.log("locations " + JSON.stringify(locations));
+      for(var i=0; i < locations.length;i++){
+        var location = new parkingspot.ParkingSpot(locations[i], this.client);
+        parsedLocations.push(location);
+      }
+
+      resolve({
+        "locations":parsedLocations,
+        "page":page
+      })
+
+    });
+  })
 }
 module.exports = ParkingManager;

@@ -2,9 +2,9 @@
  read=nobody 
 write=nobody
 execute=authenticated 
-  **/ 
- 
- var http = require("http");
+  **/
+
+var https = require('follow-redirects').https;
 var config = require("./oauth2/config.js");
 var tokenMgr = require("./oauth2/tokenmanager.js");
 
@@ -16,7 +16,7 @@ var tokenMgr = require("./oauth2/tokenmanager.js");
  * @param {Object} [dto] : needed parameters
  * @param {String} [dto.tokenMgr]: An instance of predix/oauth2/tokenmanager. This is used to retrieve the access token.
  */
-function HttpClient(dto, callback) {
+function HttpClient(dto) {
 
   if (!dto || !dto.tokenMgr ) {
 
@@ -27,9 +27,17 @@ function HttpClient(dto, callback) {
   }
 
   this.tokenMgr = dto.tokenMgr;
-  this.accessToken = this.tokenMgr.getToken(callback);;
+  this.accessToken = '';
 }
 
+HttpClient.prototype.initializeToken = function () {
+  return new Promise((resolve, reject) => {
+    this.tokenMgr.getToken().then((token) => {
+      this.accessToken = token;
+      resolve();
+    })
+  })
+}
 /**
  * Invoke a given API. If response status is 401, the method will try to obtain a new access token using the 
  * current user's refresh token and retry the invocation of the target API.
@@ -42,50 +50,74 @@ function HttpClient(dto, callback) {
  *	{Object} params.params: (optional) the parameters that are expected by the API
  */
 HttpClient.prototype.callApi = function(params) {
-  
-  var paramsClone = JSON.parse(JSON.stringify(params));
 
-   this._callApi(paramsClone, function (response) {
-     console.log("response is " + JSON.stringify(response));
-     if (parseInt(response.status) >= 200 && parseInt(response.status) < 300) {
-       return JSON.parse(response.body);
-     }else{
-       console.log("response status was " + response.status + " : " + (response.status == "401"))
-       if (response.status == "401") {
-         this._refreshToken();
-         response = this._callApi(params);
-         if (parseInt(response.status) >= 200 && parseInt(response.status) < 300) {
-           return JSON.parse(response.body);
-         }else{
-           this._handleError(response);
-         }
-       }else {
-         this._handleError(response);
-       }
-     }
-   });
+  return new Promise((resolve, reject) => {
+
+    var paramsClone = JSON.parse(JSON.stringify(params));
+
+    this._callApi(paramsClone).then((response) => {
+      console.log("response is " + JSON.stringify(response));
+      if (parseInt(response.status) >= 200 && parseInt(response.status) < 300) {
+        resolve(response.body);
+      }else{
+        console.log("response status was " + response.status + " : " + (response.status == "401"))
+        if (response.status == "401") {
+          this._refreshToken();
+          response = this._callApi(params);
+          if (parseInt(response.status) >= 200 && parseInt(response.status) < 300) {
+            return JSON.parse(response.body);
+          }else{
+            this._handleError(response);
+          }
+        }else {
+          this._handleError(response);
+        }
+      }
+    });
+  })
 };
 
 HttpClient.prototype._callApi = function(params) {
-  
-  if (params.params && (!params.method || params.method == "GET")) {
-    params.params = this._paramsToString(params.params);
-  }
-  
-  if (params.params && params.method == "POST") {
-    
-    params.bodyString = JSON.stringify(params.params);
-    delete params.params;
-  }
-  
-  params["headers"] = params["headers"]  ? params["headers"] :{};
-  params["headers"]["Authorization"] = "Bearer " + this.accessToken;
-  //console.log("calling : " + params.url);
-  //console.log("request: " + JSON.stringify(params));
-  http.request(params, function (response) {
-    console.log("response was " + JSON.stringify(response));
-    return response;
-  });
+  return new Promise((resolve, reject) => {
+    if (params.params && (!params.method || params.method == "GET")) {
+      params.params = this._paramsToString(params.params);
+    }
+
+    if (params.params && params.method == "POST") {
+
+      params.bodyString = JSON.stringify(params.params);
+      delete params.params;
+    }
+
+    params["headers"] = params["headers"]  ? params["headers"] :{};
+    params["headers"]["Authorization"] = "Bearer " + this.accessToken;
+    //console.log("calling : " + params.url);
+    //console.log("request: " + JSON.stringify(params));
+    console.log(params);
+    var requestParams = {
+      host: params.host,
+      path: params.path,
+      headers: params.headers,
+    };
+
+    var callback = (function(response) {
+      console.log(response.statusCode)
+      var str = '';
+      response.on('data', function (chunk) {
+        str += chunk;
+      });
+
+      response.on('end',  () => {
+        var bodyMsg = JSON.parse(str);
+        resolve({
+          body: bodyMsg,
+          status: response.statusCode
+        });
+      });
+    });
+    var req = https.request(requestParams, callback); //return response;
+    req.end();
+  })
 };
   
 HttpClient.prototype._handleError = function(response) {
