@@ -299,7 +299,7 @@ ParkingManager.prototype.listParkingSpots = function(boundary1,boundary2,options
       var parsedLocations = [];
       console.log("locations " + JSON.stringify(locations));
       for(var i=0; i < locations.length;i++){
-        var location = new parkingspot.ParkingSpot(locations[i], this.client);
+        var location = new parkingspot(locations[i], this.client);
         parsedLocations.push(location);
       }
 

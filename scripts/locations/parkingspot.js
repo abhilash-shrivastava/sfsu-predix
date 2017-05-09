@@ -41,4 +41,5 @@ ParkingSpot.prototype.listParkingAssets = function(){
     parsedAssets.push(new parkingasset.ParkingAsset(assets[i],this.client));
   }
   return parsedAssets;
-}			
+}
+module.exports =  ParkingSpot;
