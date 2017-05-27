@@ -113,7 +113,7 @@ ParkingManager.prototype.listParkingAssetsWithin = function(boundary1,boundary2,
   options['queryType'] = 'event-type';
   options['serviceType'] = "parking";
   options['bbox'] = boundary;
-  options['zoneId'] = predixconfig.services["parking"].zoneId
+  options['zoneId'] = predixconfig.services["parking"].zoneId;
 
   if(!options['queryValue']  || options['queryValue'] == ""){
 	  options['queryValue'] = mappings.eventTypes.PKIN;

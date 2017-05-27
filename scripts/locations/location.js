@@ -4,7 +4,7 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var predixConfig = require("../config.js")
+ var predixConfig = require("./../config")
 
 
 /**
@@ -55,22 +55,35 @@ Location.prototype.getDetails  = function(){
 * @return returns an array of asset objects that are monitoring this location
 **/
 
-Location.prototype.listAssets  = function(){
-  	var url = this["_links"]["self"].href.split("{")[0].replace("http","https");
-  	console.log("Calling URL "  + url);
-  	var zoneId = predixConfig.services[this.serviceType]["zoneId"];
-  	var request = {
-      url: url,
+Location.prototype.listAssets  = function(dto){
+  return new Promise((resolve, reject) =>{
+    var url = predixConfig.services[this.serviceType]["endPoint"];
+    console.log("Calling URL "  + url);
+    var zoneId = predixConfig.services[this.serviceType]["zoneId"];
+    var request = {
+      host: url,
+      path: "/v2/metadata/assets/search?q=eventTypes:" + dto.queryValue + "&bbox=" + dto.bbox,
       headers: {
         "Predix-Zone-Id": zoneId
       }
-  	}
-    
-  	var response = this.client.callApi(request);
-    var assets = [];
-  	if(response["_embedded"] && response["_embedded"]["assets"]){
- 	  assets = response["_embedded"]["assets"]
     }
-  	return assets;
-}
+    if (dto.index) {
+      request.path = request.path + "&page=" + dto.index;
+    }
+
+    if (dto.size) {
+      request.path = request.path + "&size=" + dto.size;
+    }
+
+    this.client.callApi(request).then((response) => {
+      var assets = response.content;
+      if(response["_embedded"] && response["_embedded"]["assets"]){
+        assets = response["_embedded"]["assets"]
+      }else {
+
+      }
+      resolve(assets);
+    });
+  });
+};
 module.exports = Location;

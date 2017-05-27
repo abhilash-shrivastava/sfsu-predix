@@ -40,11 +40,15 @@ ParkingAsset.prototype = new asset();
 **/
 
 ParkingAsset.prototype.listVehiculesOut= function(startTime,endTime,options){
-	options["serviceType"] = "parking";
-	options["eventType"] = mappings.eventTypes.PKOUT;
-	options["startTime"] = startTime;
-	options["endTime"] = endTime;
-	return this.getEvents(options)
+	return new Promise((resolve, reject) => {
+    options["serviceType"] = "parking";
+    options["eventType"] = mappings.eventTypes.PKOUT;
+    options["startTime"] = startTime;
+    options["endTime"] = endTime;
+    this.getEvents(options).then((response) =>{
+    	resolve(response);
+		})
+	})
 }
 
 
@@ -62,9 +66,14 @@ ParkingAsset.prototype.listVehiculesOut= function(startTime,endTime,options){
 **/
 
 ParkingAsset.prototype.listVehiculesIn= function(startTime,endTime,options){
-	options["serviceType"] = "parking";
-	options["eventType"] = mappings.eventTypes.PKIN;
-	options["startTime"] = startTime;
-	options["endTime"] = endTime;
-	return this.getEvents(options)
-}			
+	return new Promise((resolve, reject) => {
+    options["serviceType"] = "parking";
+    options["eventType"] = mappings.eventTypes.PKIN;
+    options["startTime"] = startTime;
+    options["endTime"] = endTime;
+    this.getEvents(options).then((response) =>{
+    	resolve(response);
+		})
+	})
+}
+module.exports = ParkingAsset;

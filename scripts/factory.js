@@ -52,7 +52,7 @@ Predix.prototype.getTrafficManager = function(){
  */
 Predix.prototype.getParkingManager = function(){
   return new parkingmanager({client:this.client});
-}
+};
 
 /**
  * @method getParkingManager
@@ -60,5 +60,5 @@ Predix.prototype.getParkingManager = function(){
  */
 Predix.prototype.getPedestrianManager = function(){
   return new pedestrianmanager.PedestrianManager({client:this.client});
-}
+};
 module.exports = Predix;

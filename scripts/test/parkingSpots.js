@@ -4,7 +4,7 @@ write=nobody
 execute=authenticated 
   **/ 
  
- var factory = require("../factory.js");
+var factory = require("../factory.js");
 
 var predix = new factory.Predix();
 var parkingManager = predix.getParkingManager();

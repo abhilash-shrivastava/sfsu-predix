@@ -7,7 +7,7 @@ execute=authenticated
  var asset = require("./location.js");
 var mappings = require("../mappings.js");
 var parkingasset = require("../parkingasset.js");
-
+var predixconfig = require("./../config.js");
 /**
  * Class that represents parking spots
  * @class ParkingSpot
@@ -34,12 +34,25 @@ ParkingSpot.prototype = new asset();
 * @return returns all the parking assets that are monitoring this parking spot.
 */
 
-ParkingSpot.prototype.listParkingAssets = function(){
-  var assets = this.listAssets();
-  var parsedAssets = [];
-  for(var i=0;i < assets.length ;i++){
-    parsedAssets.push(new parkingasset.ParkingAsset(assets[i],this.client));
-  }
-  return parsedAssets;
-}
+ParkingSpot.prototype.listParkingAssets = function(boundary1, boundary2, options){
+  return new Promise((resolve, reject) => {
+    var boundary = boundary1 + "," + boundary2;
+    options['queryType'] = 'eventType';
+    options['serviceType'] = "parking";
+    options['bbox'] = boundary;
+    options['zoneId'] = predixconfig.services["parking"].zoneId;
+
+    if(!options['queryValue']  || options['queryValue'] == ""){
+      options['queryValue'] = mappings.eventTypes.PKIN;
+      //+ "," + mappings.eventTypes.PKIN;
+    }
+    this.listAssets(options).then((assets) => {
+      var parsedAssets = [];
+      for(var i=0;i < assets.length ;i++){
+        parsedAssets.push(new parkingasset(assets[i],this.client));
+      }
+      resolve(parsedAssets);
+    })
+  });
+};
 module.exports =  ParkingSpot;

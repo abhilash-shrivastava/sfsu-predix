@@ -37,57 +37,61 @@ Asset.prototype.constructor = Asset;
 **/
 
 Asset.prototype.getEvents = function(dto){
-  	var eventType = dto.eventType;
-  	var startTime = dto.startTime;
-  	var endTime = dto.endTime;
-  	var serviceParams = dto.serviceParams;
-	var serviceType = dto.serviceType;
-  	var size = dto.size;
- 	var page = dto.page;
-  
-   	if(eventType == null || eventType == ""){
+  return new Promise((resolve, reject) => {
+    var eventType = dto.eventType;
+    var startTime = dto.startTime;
+    var endTime = dto.endTime;
+    var serviceParams = dto.serviceParams;
+    var serviceType = dto.serviceType;
+    var size = dto.size;
+    var page = dto.page;
+
+    if(eventType == null || eventType == ""){
       throw "eventName is required";
     }
-  	if(startTime == null || startTime == 0){
+    if(startTime == null || startTime == 0){
       throw "startTime is required";
     }
-  	if(endTime == null || endTime == 0){
+    if(endTime == null || endTime == 0){
       throw "endTime is required";
     }
     if(serviceType == null || serviceType.trim() == ''){
       throw "serviceType is required";
     }
-  
-  	var params = {
+
+    var params = {
       "event-types":eventType,
       "start-ts":startTime,
       "end-ts":endTime,
     };
-  	
-  	if(size != null){
-    	params["size"] = size;
+
+    if(size != null){
+      params["size"] = size;
     }
-  
-  	if(page != null){
+
+    if(page != null){
       params['page'] = page;
     }
 
-  	if(serviceParams != null){
-        var keys = Object.keys(serviceParams);
-   		for (var i=0; i< keys.length; i++) {
-         	params[keys[i]] = serviceParams[keys[i]];
-    	}
+    if(serviceParams != null){
+      var keys = Object.keys(serviceParams);
+      for (var i=0; i< keys.length; i++) {
+        params[keys[i]] = serviceParams[keys[i]];
+      }
     }
-  	var url = this["_links"]["search-events"].href.split("{")[0].replace("http","https");
-  	var zoneId = predixConfig.services[serviceType]["zoneId"];
-  
+    var url = predixConfig.services[serviceType]["endPoint"];
+    var zoneId = predixConfig.services[serviceType]["zoneId"];
+
     var request = {
-      url: url,
-      params: params,
+      host: 'ic-event-service.run.aws-usw02-pr.ice.predix.io',
+      path: "/v2/assets/" + this.assetUid + "/events?eventType=" + eventType + "&startTime=" + startTime + "&endTime=" + endTime,
       headers: {
         "Predix-Zone-Id": zoneId
       }
-  	}
-  	return this.client.callApi(request);
-}
+    };
+    this.client.callApi(request).then((response) =>{
+      resolve(response);
+    });
+  })
+};
 module.exports = Asset;
